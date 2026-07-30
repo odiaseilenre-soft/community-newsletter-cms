@@ -15,5 +15,8 @@
   "type": "commonjs",
   "devDependencies": {
     "concurrently": "^10.0.4"
+  },
+  "dependencies": {
+    "slugify": "^1.6.9"
   }
 }
