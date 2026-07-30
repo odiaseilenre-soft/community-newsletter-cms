@@ -28,21 +28,3 @@ export const updateCategoryValidator = [
     .isLength({ max: 250 })
     .withMessage("Description cannot exceed 250 characters"),
 ];
-
-
-export const updateCategoryValidator = [
-  body("name")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("Name cannot be empty"),
-
-  body("description")
-    .optional()
-    .trim(),
-
-  body("isActive")
-    .optional()
-    .isBoolean()
-    .withMessage("isActive must be true or false"),
-];
