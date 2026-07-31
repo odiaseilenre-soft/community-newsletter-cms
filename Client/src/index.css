@@ -1,1 +1,11 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+.ProseMirror {
+  outline: none;
+  min-height: 400px;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}

@@ -3,14 +3,20 @@ import asyncHandler from "../utils/asyncHandler.js";
 import {
   createPost as createPostService,
   getPosts as getPostsService,
+  getPostById as getPostByIdService,
   getPostBySlug as getPostBySlugService,
   updatePost as updatePostService,
-  deletePost as deletePostService
+  deletePost as deletePostService,
 } from "../services/post/postService.js";
 
 export const createPost = asyncHandler(async (req, res) => {
   const post = await createPostService(
-    req.body,
+    {
+      ...req.body,
+      featuredImage: req.file
+        ? `/uploads/images/${req.file.filename}`
+        : null,
+    },
     req.user.id
   );
 
@@ -29,6 +35,16 @@ export const getPosts = asyncHandler(async (req, res) => {
     message: "Posts retrieved successfully",
     data: result.posts,
     pagination: result.pagination,
+  });
+});
+
+export const getPostById = asyncHandler(async (req, res) => {
+  const post = await getPostByIdService(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: "Post retrieved successfully",
+    data: post,
   });
 });
 

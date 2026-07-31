@@ -119,6 +119,18 @@ export const getPosts = async (query) => {
   };
 };
 
+export const getPostById = async (id) => {
+  const post = await Post.findById(id)
+    .populate("category", "name slug")
+    .populate("author", "firstName lastName email");
+
+  if (!post) {
+    throw new AppError("Post not found", 404);
+  }
+
+  return post;
+};
+
 export const getPostBySlug = async (slug) => {
   const post = await Post.findOne({
     slug,
