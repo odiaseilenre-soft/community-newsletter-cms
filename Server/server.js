@@ -11,6 +11,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import userRoutes from './routes/userRoutes.js';
 import postRoutes from "./routes/postRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 
@@ -52,6 +53,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/dashboard", dashboardRoutes);

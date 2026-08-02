@@ -55,7 +55,7 @@ export const registerUser = async (userData) => {
  // const hashedRefreshToken = await bcrypt.hash(refreshToken, 12);
   //user.refreshToken = hashedRefreshToken;
 
-  user.refreshToken = hashRefreshToken(refreshToken);
+  user.refreshTokenHash = hashRefreshToken(refreshToken);
   await user.save();
 
   return {
@@ -67,7 +67,7 @@ export const registerUser = async (userData) => {
 
 // login user
 export const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
     throw new AppError("Invalid email or password", 401);

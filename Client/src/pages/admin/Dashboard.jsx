@@ -6,22 +6,20 @@ import {
   FaFolderOpen,
   FaCheckCircle,
   FaRegEdit,
+  FaUsers,
 } from "react-icons/fa";
 
 import { getDashboardStats } from "../../services/dashboardService";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const response = await getDashboardStats();
-
         setStats(response.data);
       } catch (err) {
         setError(
@@ -55,7 +53,7 @@ const Dashboard = () => {
         Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
 
         <StatCard
           title="Total Posts"
@@ -85,6 +83,20 @@ const Dashboard = () => {
           color="bg-purple-600"
         />
 
+        <StatCard
+          title="Users"
+          value={stats.totalUsers}
+          icon={<FaUsers />}
+          color="bg-indigo-600"
+        />
+
+        <StatCard
+          title="Active Users"
+          value={stats.activeUsers}
+          icon={<FaUsers />}
+          color="bg-teal-600"
+        />
+
       </div>
 
       <div className="bg-white rounded-lg shadow">
@@ -97,7 +109,7 @@ const Dashboard = () => {
 
           <Link
             to="/admin/posts"
-            className="text-blue-600"
+            className="text-blue-600 hover:underline"
           >
             View All
           </Link>
@@ -128,24 +140,44 @@ const Dashboard = () => {
 
           <tbody>
 
-            {stats.recentPosts.map((post) => (
-              <tr
-                key={post._id}
-                className="border-t"
-              >
-                <td className="p-4">
-                  {post.title}
-                </td>
-
-                <td className="p-4">
-                  {post.category?.name}
-                </td>
-
-                <td className="p-4 capitalize">
-                  {post.status}
+            {stats.recentPosts.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="3"
+                  className="text-center p-6 text-gray-500"
+                >
+                  No posts available.
                 </td>
               </tr>
-            ))}
+            ) : (
+              stats.recentPosts.map((post) => (
+                <tr
+                  key={post._id}
+                  className="border-t hover:bg-gray-50"
+                >
+                  <td className="p-4">
+                    {post.title}
+                  </td>
+
+                  <td className="p-4">
+                    {post.category?.name}
+                  </td>
+
+                  <td className="p-4 capitalize">
+                    <span
+                      className={`px-2 py-1 rounded text-white text-sm ${
+                        post.status === "published"
+                          ? "bg-green-600"
+                          : "bg-yellow-500"
+                      }`}
+                    >
+                      {post.status}
+                    </span>
+                  </td>
+
+                </tr>
+              ))
+            )}
 
           </tbody>
 

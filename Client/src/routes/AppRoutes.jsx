@@ -10,6 +10,9 @@ import Posts from "../pages/admin/Posts";
 import Categories from "../pages/admin/Categories";
 import CreatePost from "../pages/admin/CreatePost";
 import ProtectedRoute from "../components/ProtectedRoute";
+import EditUser from "../pages/admin/EditUser";
+
+import Users from "../pages/admin/Users";
 
 const AppRoutes = () => {
   return (
@@ -20,17 +23,21 @@ const AppRoutes = () => {
 
       <Route path="/login" element={<Login />} />
 
-      <Route path="/admin" element={ 
-        <ProtectedRoute> 
+      <Route path="/admin" element={
+        <ProtectedRoute>
           <DashboardLayout />
-        </ProtectedRoute>}>
-          <Route index element={<Dashboard />} />
+        </ProtectedRoute>
+      }>
+        <Route index element={<Dashboard />} />
 
-          <Route path="posts" element={<Posts />} />
+        <Route path="posts" element={<Posts />} />
 
-          <Route path="posts/new" element={<CreatePost />} />
+        <Route path="posts/new" element={<CreatePost />} />
 
-          <Route path="categories" element={<Categories />} />
+        <Route path="categories" element={<Categories />} />
+
+        <Route path="users" element={<Users />} />
+        <Route path="users/:id/edit" element={<EditUser />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,10 +1,10 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   FaTachometerAlt,
   FaNewspaper,
   FaFolderOpen,
+  FaUsers,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -12,10 +12,12 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
 
   const { logout } = useAuth();
+
   const handleLogout = () => {
-  logout();
-  navigate("/login");
-};
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
@@ -32,50 +34,64 @@ const DashboardLayout = () => {
 
         <nav className="space-y-2">
 
-        <NavLink
-          to="/admin"
-          end
-          className={({ isActive }) =>
-            `flex items-center gap-3 p-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-600"
-                : "hover:bg-gray-700"
-            }`
-          }
-        >
-          <FaTachometerAlt />
-          Dashboard
-        </NavLink>
+          <NavLink
+            to="/admin"
+            end
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-gray-700"
+              }`
+            }
+          >
+            <FaTachometerAlt />
+            Dashboard
+          </NavLink>
 
-        <NavLink
-          to="/admin/posts"
-          className={({ isActive }) =>
-            `flex items-center gap-3 p-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-600"
-                : "hover:bg-gray-700"
-            }`
-          }
-        >
-          <FaNewspaper />
-          Posts
-        </NavLink>
+          <NavLink
+            to="/admin/posts"
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-gray-700"
+              }`
+            }
+          >
+            <FaNewspaper />
+            Posts
+          </NavLink>
 
-        <NavLink
-          to="/admin/categories"
-          className={({ isActive }) =>
-            `flex items-center gap-3 p-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-600"
-                : "hover:bg-gray-700"
-            }`
-          }
-        >
-          <FaFolderOpen />
-          Categories
-        </NavLink>
+          <NavLink
+            to="/admin/categories"
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-gray-700"
+              }`
+            }
+          >
+            <FaFolderOpen />
+            Categories
+          </NavLink>
 
-      </nav>
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-gray-700"
+              }`
+            }
+          >
+            <FaUsers />
+            Users
+          </NavLink>
+
+        </nav>
 
         <button
           onClick={handleLogout}

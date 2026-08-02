@@ -1,5 +1,6 @@
 import Post from "../../models/Post.js";
 import Category from "../../models/Category.js";
+import User from "../../models/User.js";
 
 export const getDashboardStats = async () => {
   const [
@@ -7,6 +8,8 @@ export const getDashboardStats = async () => {
     publishedPosts,
     draftPosts,
     totalCategories,
+    totalUsers,
+    activeUsers,
     recentPosts,
   ] = await Promise.all([
     Post.countDocuments(),
@@ -21,6 +24,12 @@ export const getDashboardStats = async () => {
 
     Category.countDocuments(),
 
+    User.countDocuments(),
+
+    User.countDocuments({
+      isActive: true,
+    }),
+
     Post.find()
       .populate("category", "name")
       .sort({ createdAt: -1 })
@@ -32,6 +41,8 @@ export const getDashboardStats = async () => {
     publishedPosts,
     draftPosts,
     totalCategories,
+    totalUsers,
+    activeUsers,
     recentPosts,
   };
 };
