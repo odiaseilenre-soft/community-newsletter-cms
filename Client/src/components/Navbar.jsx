@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+
+  const { user, isAuthenticated, logout } = useAuth();
 
   const [search, setSearch] = useState("");
 
@@ -13,9 +16,16 @@ const Navbar = () => {
 
     if (!trimmedSearch) return;
 
-    navigate(`/search?search=${encodeURIComponent(trimmedSearch)}`);
+    navigate(
+      `/search?search=${encodeURIComponent(trimmedSearch)}`
+    );
 
     setSearch("");
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
   };
 
   return (
@@ -105,13 +115,57 @@ const Navbar = () => {
             </button>
           </form>
 
-          {/* Admin Login */}
-          <Link
-            to="/login"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
-          >
-            Admin Login
-          </Link>
+          {/* Authentication */}
+          {!isAuthenticated ? (
+            <div className="flex items-center gap-3">
+
+              <Link
+                to="/login"
+                className="text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition whitespace-nowrap"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
+              >
+                Register
+              </Link>
+
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+
+              {/* User information */}
+              <span className="text-gray-700 whitespace-nowrap">
+                Hi,{" "}
+                <span className="font-semibold">
+                  {user?.firstName || user?.username}
+                </span>
+              </span>
+
+              {/* Admin Dashboard */}
+              {user?.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
+                >
+                  Dashboard
+                </Link>
+              )}
+
+              {/* Logout */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition whitespace-nowrap"
+              >
+                Logout
+              </button>
+
+            </div>
+          )}
 
         </div>
 

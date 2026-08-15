@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { login } = useAuth();
 
@@ -27,32 +28,36 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
+  setLoading(true);
+  setError("");
 
-    setError("");
+  try {
+    const response = await loginUser(formData);
 
-    try {
-      const response = await loginUser(formData);
+    login(response.user, response.accessToken);
 
-      login(response.user, response.accessToken);
-      toast.success("Welcome back!");
+    toast.success("Welcome back!");
 
-      if (response.user.role === "admin") {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Login failed."
-      );
-    } finally {
-      setLoading(false);
+    const from = location.state?.from?.pathname;
+
+    if (from) {
+      navigate(from, { replace: true });
+    } else if (response.user.role === "admin") {
+      navigate("/admin", { replace: true });
+    } else {
+      navigate("/", { replace: true });
     }
-  };
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+        "Login failed."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -63,7 +68,7 @@ const Login = () => {
       >
 
         <h1 className="text-3xl font-bold mb-6 text-center">
-          Admin Login
+         Login
         </h1>
 
         {error && (
@@ -112,6 +117,16 @@ const Login = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+        <p className="text-center mt-4 text-gray-600">
+          Don't have an account?{" "}
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="text-blue-600 hover:underline"
+          >
+            Register
+          </button>
+        </p>
 
       </form>
 
