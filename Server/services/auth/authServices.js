@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import { generateAccessToken, generateRefreshToken, hashRefreshToken, verifyRefreshToken } from './tokenService.js';
-import AppError from "../../utils/appError.js";
+import AppError from "../../utils/AppError.js";
 import { AUTH } from "../../constants/auth.js";
-import hashToken from "../../utils/hashToken.js";
+//import hashToken from "../../utils/hashToken.js";
 
 export const registerUser = async (userData) => {
   const {
@@ -148,6 +148,7 @@ export const refreshUser = async (refreshToken) => {
   await user.save();
 
   return {
+    user,
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
   };

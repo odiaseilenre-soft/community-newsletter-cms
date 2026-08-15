@@ -21,9 +21,20 @@ const port = env.PORT;
 
 const app = express();
 
-// Middleware
-app.use(helmet());
 
+// Middleware
+//app.use(helmet());
+ app.use(
+   helmet({
+     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "http://localhost:5000",],
+      },
+    }, 
+ })
+ );
 app.use(
   cors({
     origin: env.CLIENT_URL,
@@ -36,13 +47,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+// Serve uploaded files
+app.use("/uploads", express.static("uploads"));
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.originalUrl}`);
   next();
 });
 
-// Serve uploaded files
-app.use("/uploads", express.static("uploads"));
+
 
 // Routes
 app.get("/", (req, res) => {

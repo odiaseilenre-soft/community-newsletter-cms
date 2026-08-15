@@ -10,6 +10,12 @@ import {
 } from "../services/post/postService.js";
 
 export const createPost = asyncHandler(async (req, res) => {
+  // ===== Debug Logs =====
+  console.log("========== CREATE POST ==========");
+  console.log("Request Body:", req.body);
+  console.log("Uploaded File:", req.file);
+  console.log("===============================");
+
   const post = await createPostService(
     {
       ...req.body,
@@ -49,12 +55,12 @@ export const getPostById = asyncHandler(async (req, res) => {
 });
 
 export const getPostBySlug = asyncHandler(async (req, res) => {
-  const post = await getPostBySlugService(req.params.slug);
+  const result = await getPostBySlugService(req.params.slug);
 
   res.status(200).json({
     success: true,
     message: "Post retrieved successfully",
-    data: post,
+    data: result,
   });
 });
 

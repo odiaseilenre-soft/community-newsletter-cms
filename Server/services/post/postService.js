@@ -143,9 +143,24 @@ export const getPostBySlug = async (slug) => {
     throw new AppError("Post not found", 404);
   }
 
-  return post;
-};
+  // Increment views
+  post.views += 1;
+  await post.save();
 
+  // Get related posts
+  const relatedPosts = await Post.find({
+    _id: { $ne: post._id },
+    category: post.category._id,
+    status: "published",
+  })
+    .select("title slug excerpt featuredImage readTime publishedAt")
+    .limit(3);
+
+  return {
+    post,
+    relatedPosts,
+  };
+};
 export const updatePost = async (id, updateData) => {
   const post = await Post.findById(id);
 

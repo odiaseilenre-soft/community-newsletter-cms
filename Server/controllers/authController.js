@@ -45,14 +45,25 @@ export const login = asyncHandler(async (req, res) => {
 export const refresh = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.jwt;
 
-  const { accessToken, refreshToken: newRefreshToken } =
-    await refreshUser(refreshToken);
+  const {
+    user,
+    accessToken,
+    refreshToken: newRefreshToken,
+  } = await refreshUser(refreshToken);
 
   res.cookie("jwt", newRefreshToken, refreshCookieOptions);
 
   res.status(200).json({
     success: true,
     accessToken,
+    user: {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    },
   });
 });
 

@@ -13,6 +13,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       unique: true,
       lowercase: true,
+      index: true,
     },
 
     excerpt: {
@@ -55,6 +56,7 @@ const postSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+
     isFeatured: {
       type: Boolean,
       default: false,
@@ -81,7 +83,7 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-postSchema.pre("save", function () {
+postSchema.pre("save", async function () {
   // Generate slug
   if (this.isModified("title")) {
     this.slug = slugify(this.title, {
@@ -94,6 +96,7 @@ postSchema.pre("save", function () {
   // Calculate read time (≈200 words/minute)
   if (this.isModified("content")) {
     const plainText = this.content.replace(/<[^>]*>/g, "");
+
     const words = plainText
       .trim()
       .split(/\s+/)
@@ -102,9 +105,20 @@ postSchema.pre("save", function () {
     this.readTime = Math.max(1, Math.ceil(words / 200));
   }
 
-  // Set publication date
-  if (this.status === "published" && !this.publishedAt) {
+  // Automatically set publication date
+  if (
+    this.status === "published" &&
+    !this.publishedAt
+  ) {
     this.publishedAt = new Date();
+  }
+
+  // Clear publication date if moved back to draft
+  if (
+    this.status === "draft" &&
+    this.publishedAt
+  ) {
+    this.publishedAt = null;
   }
 });
 

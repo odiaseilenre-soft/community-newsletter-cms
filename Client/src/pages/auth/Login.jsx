@@ -39,7 +39,11 @@ const Login = () => {
       login(response.user, response.accessToken);
       toast.success("Welcome back!");
 
-      navigate("/admin");
+      if (response.user.role === "admin") {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(
         err.response?.data?.message ||
