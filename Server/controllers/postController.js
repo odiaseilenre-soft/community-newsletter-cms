@@ -67,7 +67,12 @@ export const getPostBySlug = asyncHandler(async (req, res) => {
 export const updatePost = asyncHandler(async (req, res) => {
   const post = await updatePostService(
     req.params.id,
-    req.body
+    {
+      ...req.body,
+      ...(req.file && {
+        featuredImage: `/uploads/images/${req.file.filename}`,
+      }),
+    }
   );
 
   res.status(200).json({

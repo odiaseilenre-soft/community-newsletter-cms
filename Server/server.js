@@ -24,17 +24,17 @@ const app = express();
 
 // Middleware
 //app.use(helmet());
- app.use(
-   helmet({
-     crossOriginResourcePolicy: false,
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "http://localhost:5000",],
+        imgSrc: ["'self'", "data:", env.SERVER_URL],
       },
-    }, 
- })
- );
+    },
+  })
+);
 app.use(
   cors({
     origin: env.CLIENT_URL,

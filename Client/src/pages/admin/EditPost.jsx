@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { getCategories } from "../../services/categoryService";
+import { API_BASE_URL } from "../../services/api";
 
 import {
   getPostById,
@@ -235,7 +236,7 @@ const EditPost = () => {
             ) : (
             featuredImage && (
                 <img
-                src={`http://localhost:5000${featuredImage}`}
+                src={`${API_BASE_URL}${featuredImage}`}
                 alt="Current"
                 className="mt-4 h-56 w-full max-w-md object-cover rounded-lg border"
                 />
