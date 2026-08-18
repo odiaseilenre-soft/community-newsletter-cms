@@ -2,6 +2,7 @@ import slugify from "slugify";
 import Post from "../../models/Post.js";
 import Category from "../../models/Category.js";
 import AppError from "../../utils/AppError.js";
+import cloudinary from "../../config/cloudinary.js";
 
 export const createPost = async (
   {
@@ -13,6 +14,7 @@ export const createPost = async (
     status,
     tags,
     isFeatured,
+    featuredImagePublicId,
   },
   author
 ) => {
@@ -48,6 +50,7 @@ export const createPost = async (
     status,
     tags,
     isFeatured,
+    featuredImagePublicId,
   });
 
   return post;
@@ -195,6 +198,20 @@ export const updatePost = async (id, updateData) => {
     }
   }
 
+  // If a new image is being uploaded,
+  // delete the old Cloudinary image
+  if (
+    updateData.featuredImage &&
+    post.featuredImagePublicId
+  ) {
+    await cloudinary.uploader.destroy(
+      post.featuredImagePublicId,
+      {
+        resource_type: "image",
+      }
+    );
+  }
+
   Object.assign(post, updateData);
 
   await post.save();
@@ -209,5 +226,16 @@ export const deletePost = async (id) => {
     throw new AppError("Post not found", 404);
   }
 
+  // Delete image from Cloudinary if one exists
+  if (post.featuredImagePublicId) {
+    await cloudinary.uploader.destroy(
+      post.featuredImagePublicId,
+      {
+        resource_type: "image",
+      }
+    );
+  }
+
+  // Delete post from MongoDB
   await post.deleteOne();
 };

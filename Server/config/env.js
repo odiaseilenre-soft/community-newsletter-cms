@@ -14,6 +14,10 @@ const env = cleanEnv(process.env, {
   CLIENT_URL: str(),
   SERVER_URL: str(),
 
+  CLOUDINARY_CLOUD_NAME: str(),
+  CLOUDINARY_API_KEY: str(),
+  CLOUDINARY_API_SECRET: str(),
+
   NODE_ENV: str({
     default: "development",
     choices: ["development", "production", "test"],

@@ -1,4 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
+import uploadToCloudinary from "../utils/cloudinaryUpload.js";
 
 import {
   createPost as createPostService,
@@ -10,18 +11,32 @@ import {
 } from "../services/post/postService.js";
 
 export const createPost = asyncHandler(async (req, res) => {
-  // ===== Debug Logs =====
   console.log("========== CREATE POST ==========");
   console.log("Request Body:", req.body);
   console.log("Uploaded File:", req.file);
   console.log("===============================");
 
+  let featuredImage = null;
+  let featuredImagePublicId = null;
+
+  if (req.file) {
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      "community-newsletter/posts"
+    );
+
+    featuredImage = result.secure_url;
+    featuredImagePublicId = result.public_id;
+
+    console.log("Cloudinary Image URL:", featuredImage);
+    console.log("Cloudinary Public ID:", featuredImagePublicId);
+  }
+
   const post = await createPostService(
     {
       ...req.body,
-      featuredImage: req.file
-        ? `/uploads/images/${req.file.filename}`
-        : null,
+      featuredImage,
+      featuredImagePublicId,
     },
     req.user.id
   );
@@ -65,12 +80,33 @@ export const getPostBySlug = asyncHandler(async (req, res) => {
 });
 
 export const updatePost = asyncHandler(async (req, res) => {
+  let featuredImage = null;
+  let featuredImagePublicId = null;
+
+  // Upload new image to Cloudinary if one was provided
+  if (req.file) {
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      "community-newsletter/posts"
+    );
+
+    featuredImage = result.secure_url;
+    featuredImagePublicId = result.public_id;
+
+    console.log("Cloudinary Image URL:", featuredImage);
+    console.log(
+      "Cloudinary Public ID:",
+      featuredImagePublicId
+    );
+  }
+
   const post = await updatePostService(
     req.params.id,
     {
       ...req.body,
       ...(req.file && {
-        featuredImage: `/uploads/images/${req.file.filename}`,
+        featuredImage,
+        featuredImagePublicId,
       }),
     }
   );

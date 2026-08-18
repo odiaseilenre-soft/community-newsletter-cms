@@ -32,6 +32,11 @@ const postSchema = new mongoose.Schema(
       default: null,
     },
 
+    featuredImagePublicId: {
+      type: String,
+      default: null,
+    },
+
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
